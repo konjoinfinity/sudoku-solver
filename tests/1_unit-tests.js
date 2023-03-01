@@ -3,73 +3,188 @@ const assert = chai.assert;
 const Solver = require("../controllers/sudoku-solver.js");
 let solver = new Solver();
 
-let validPuzzleString = "1.5..2.84..63.12.7.2..5.....9..1....8.2.3674.3.7.2..9.47...8..1..16....926914.37.";
-
-suite("UnitTests => Solver Logic Functions", () => {
-  suite("solver tests", function () {
-    test("Logic handles a valid puzzle string of 81 characters", function (done) {
-      let complete = "135762984946381257728459613694517832812936745357824196473298561581673429269145378";
-      assert.equal(solver.solve(validPuzzleString), complete);
-      done();
-    });
-
-    test("Logic handles a puzzle string with invalid characters (not 1-9 or .), should return false", function (done) {
-        let invalidPuzzleString = "1.5..2.84..63.12.7.2..5..g..9..1....8.2.3674.3.7.2..9.47...8..1..16....926914.37.";
-        assert.equal(solver.solve(invalidPuzzleString), false);
-        done();
-      });
-
-      test("Logic handles a puzzle string that is not 81 characters in length, should return false", function (done) {
-        let invalidPuzzleString = "1.5..2.84..63.12.7.2..5.......9..1....8.2.3674.3.7.2..9.47...8..1..16....926914.37.";
-          assert.equal(solver.solve(invalidPuzzleString), false);
-        done();
-      });
-  
-      test("Logic handles a valid row placement, should return true", function (done) {
-        assert.equal(solver.checkRowPlacement(validPuzzleString, "A", "2", "9"), true);
-        done();
-      });
-
-      test("Logic handles an invalid row placement, should return false", function (done) {
-        assert.equal(solver.checkRowPlacement(validPuzzleString, "A", "2", "1"), false);
-        done();
-      });
-  
-      test("Logic handles a valid column placement, should return true", function (done) {
-        assert.equal(solver.checkColPlacement(validPuzzleString, "A", "2", "8"), true);
-        done();
-      });
-
-      test("Logic handles an invalid column placement, should return false", function (done) {
-        assert.equal(solver.checkColPlacement(validPuzzleString, "A", "2", "9"), false);
-        done();
-      });
-
-      test("Logic handles a valid region (3x3 grid) placement, should return true", function (done) {
-        assert.equal(solver.checkRegionPlacement(validPuzzleString, "A", "2", "3"), true);
-        done();
-      });
-
-      test("Logic handles an invalid region (3x3 grid) placement, should return false", function (done) {
-        assert.equal(solver.checkRegionPlacement(validPuzzleString, "A", "2", "1"), false);
-        done();
-      });
-
-      test("Valid puzzle strings pass the solver, should be equal", function (done) {
-        assert.equal(solver.solve(validPuzzleString), "135762984946381257728459613694517832812936745357824196473298561581673429269145378");
-        done();
-      });
-
-      test("Invalid puzzle strings fail the solver, should be false", function (done) {
-        let invalidPuzzleString = "115..2.84..63.12.7.2..5.....9..1....8.2.3674.3.7.2..9.47...8..1..16....926914.37.";
-        assert.equal(solver.solve(invalidPuzzleString), false);
-        done();
-      });
-
-      test("Solver returns the the expected solution for an incomplete puzzzle, should be equal", function (done) {
-        assert.equal(solver.solve("..839.7.575.....964..1.......16.29846.9.312.7..754.....62..5.78.8...3.2...492...1"), "218396745753284196496157832531672984649831257827549613962415378185763429374928561");
-        done();
-      });
-
-})
-})
+suite("UnitTests", () => {
+  test("validates a valid puzzle string of 81 characters, should return true", function () {
+    assert.isTrue(
+      solver.validate(
+        "..9..5.1.85.4....2432......1...69.83.9.....6.62.71...9......1945....4.37.4.3..6.."
+      ),
+      "valid puzzlestring is true"
+    );
+  });
+  test("Validates invalid characters (not 1-9 or .)", function () {
+    assert.equal(
+      solver.validate(
+        ".a9..5.1.85.4....2432......1...69.83.9.....6.62.71...9......1945....4.37.4.3..6.."
+      ).error,
+      "Invalid characters in puzzle",
+      "letters are not appropriate in puzzlestring"
+    );
+  });
+  test("Validates puzzle for 81 characters", function () {
+    assert.equal(
+      solver.validate(
+        "..9..5.1.85.4....2432......1...69.83.9.....6.62.71...9......1945....4.37.4.3..6"
+      ).error,
+      "Expected puzzle to be 81 characters long",
+      "checking incorrect length"
+    );
+  });
+  test("Validates valid row placement", function () {
+    assert.equal(
+      solver.checkRowPlacement(
+        [
+          [".", ".", "9", ".", ".", "5", ".", "1", "."],
+          ["8", "5", ".", "4", ".", ".", ".", ".", "2"],
+          ["4", "3", "2", ".", ".", ".", ".", ".", "."],
+          ["1", ".", ".", ".", "6", "9", ".", "8", "3"],
+          [".", "9", ".", ".", ".", ".", ".", "6", "."],
+          ["6", "2", ".", "7", "1", ".", ".", ".", "9"],
+          [".", ".", ".", ".", ".", ".", "1", "9", "4"],
+          ["5", ".", ".", ".", ".", "4", ".", "3", "7"],
+          [".", "4", ".", "3", ".", ".", "6", ".", "."],
+        ],
+        0,
+        "A",
+        7
+      ),
+      "validRow",
+      "valid row"
+    );
+  });
+  test("Checks invalid row placement", function () {
+    assert.equal(
+      solver.checkRowPlacement(
+        [
+          [".", ".", "9", ".", ".", "5", ".", "1", "."],
+          ["8", "5", ".", "4", ".", ".", ".", ".", "2"],
+          ["4", "3", "2", ".", ".", ".", ".", ".", "."],
+          ["1", ".", ".", ".", "6", "9", ".", "8", "3"],
+          [".", "9", ".", ".", ".", ".", ".", "6", "."],
+          ["6", "2", ".", "7", "1", ".", ".", ".", "9"],
+          [".", ".", ".", ".", ".", ".", "1", "9", "4"],
+          ["5", ".", ".", ".", ".", "4", ".", "3", "7"],
+          [".", "4", ".", "3", ".", ".", "6", ".", "."],
+        ],
+        0,
+        "A",
+        9
+      ),
+      "conflictRow",
+      "invalid row"
+    );
+  });
+  test("Checks valid column placement", function () {
+    assert.equal(
+      solver.checkColPlacement(
+        [
+          [".", ".", "9", ".", ".", "5", ".", "1", "."],
+          ["8", "5", ".", "4", ".", ".", ".", ".", "2"],
+          ["4", "3", "2", ".", ".", ".", ".", ".", "."],
+          ["1", ".", ".", ".", "6", "9", ".", "8", "3"],
+          [".", "9", ".", ".", ".", ".", ".", "6", "."],
+          ["6", "2", ".", "7", "1", ".", ".", ".", "9"],
+          [".", ".", ".", ".", ".", ".", "1", "9", "4"],
+          ["5", ".", ".", ".", ".", "4", ".", "3", "7"],
+          [".", "4", ".", "3", ".", ".", "6", ".", "."],
+        ],
+        0,
+        1,
+        7
+      ),
+      "validColumn",
+      "valid column"
+    );
+  });
+  test("Checks invalid column placement", function () {
+    assert.equal(
+      solver.checkColPlacement(
+        [
+          [".", ".", "9", ".", ".", "5", ".", "1", "."],
+          ["8", "5", ".", "4", ".", ".", ".", ".", "2"],
+          ["4", "3", "2", ".", ".", ".", ".", ".", "."],
+          ["1", ".", ".", ".", "6", "9", ".", "8", "3"],
+          [".", "9", ".", ".", ".", ".", ".", "6", "."],
+          ["6", "2", ".", "7", "1", ".", ".", ".", "9"],
+          [".", ".", ".", ".", ".", ".", "1", "9", "4"],
+          ["5", ".", ".", ".", ".", "4", ".", "3", "7"],
+          [".", "4", ".", "3", ".", ".", "6", ".", "."],
+        ],
+        0,
+        1,
+        4
+      ),
+      "conflictColumn",
+      "invalid column"
+    );
+  });
+  test("Checks valid region placement", function () {
+    assert.equal(
+      solver.checkRegionPlacement(
+        [
+          [".", ".", "9", ".", ".", "5", ".", "1", "."],
+          ["8", "5", ".", "4", ".", ".", ".", ".", "2"],
+          ["4", "3", "2", ".", ".", ".", ".", ".", "."],
+          ["1", ".", ".", ".", "6", "9", ".", "8", "3"],
+          [".", "9", ".", ".", ".", ".", ".", "6", "."],
+          ["6", "2", ".", "7", "1", ".", ".", ".", "9"],
+          [".", ".", ".", ".", ".", ".", "1", "9", "4"],
+          ["5", ".", ".", ".", ".", "4", ".", "3", "7"],
+          [".", "4", ".", "3", ".", ".", "6", ".", "."],
+        ],
+        0,
+        1,
+        7
+      ),
+      "validRegion",
+      "valid region"
+    );
+  });
+  test("Checks invalid region placement", function () {
+    assert.equal(
+      solver.checkRegionPlacement(
+        [
+          [".", ".", "9", ".", ".", "5", ".", "1", "."],
+          ["8", "5", ".", "4", ".", ".", ".", ".", "2"],
+          ["4", "3", "2", ".", ".", ".", ".", ".", "."],
+          ["1", ".", ".", ".", "6", "9", ".", "8", "3"],
+          [".", "9", ".", ".", ".", ".", ".", "6", "."],
+          ["6", "2", ".", "7", "1", ".", ".", ".", "9"],
+          [".", ".", ".", ".", ".", ".", "1", "9", "4"],
+          ["5", ".", ".", ".", ".", "4", ".", "3", "7"],
+          [".", "4", ".", "3", ".", ".", "6", ".", "."],
+        ],
+        0,
+        1,
+        5
+      ),
+      "conflictRegion",
+      "invalid region"
+    );
+  });
+  test("Solves a valid puzzle strings", function () {
+    assert.isDefined(
+      solver.solve(
+        "..9..5...8..4....2432......1...69.83.9.....6..2.71...9......1945....4.37.4.3..6.."
+      ).solution,
+      "valid string shows solution"
+    );
+  });
+  test("Solver completes the puzzle for an incomplete puzzle", function () {
+    assert.notInclude(
+      solver.solve(
+        "..9..5.1..5.4....2432......1....9.83.9.....6.62.71...9......1945....4.37.4.3..6.."
+      ).solution,
+      ".",
+      "solver completes the puzzle"
+    );
+  });
+  test("Solver attempts with an invalid puzzle strings", function () {
+    assert.isDefined(
+      solver.solve(
+        "..99.5.1.85.4....2432......1...69.83.9.....6.62.71...9......1945....4.37.4.3..6.."
+      ).error,
+      "invalid string shows error"
+    );
+  });
+});
