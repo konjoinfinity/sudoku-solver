@@ -33,24 +33,24 @@ module.exports = function (app) {
       res.json({ error: "Invalid characters in puzzle" });
       return;
     }
-    // let validCol = solver.checkColPlacement(puzzle, row, column, value);
-    // let validReg = solver.checkRegionPlacement(puzzle, row, column, value);
-    // let validRow = solver.checkRowPlacement(puzzle, row, column, value);
-    // let conflicts = [];
-    // if (validCol && validReg && validRow) {
-    //   res.json({ valid: true });
-    // } else {
-    //   if (!validRow) {
-    //     conflicts.push("row");
-    //   }
-    //   if (!validCol) {
-    //     conflicts.push("column");
-    //   }
-    //   if (!validReg) {
-    //     conflicts.push("region");
-    //   }
-    //   res.json({ valid: false, conflict: conflicts });
-    // }
+    let validCol = solver.checkColPlacement(puzzle, row, column, value);
+    let validReg = solver.checkRegionPlacement(puzzle, row, column, value);
+    let validRow = solver.checkRowPlacement(puzzle, row, column, value);
+    let conflicts = [];
+    if (validCol && validReg && validRow) {
+      res.json({ valid: true });
+    } else {
+      if (!validRow) {
+        conflicts.push("row");
+      }
+      if (!validCol) {
+        conflicts.push("column");
+      }
+      if (!validReg) {
+        conflicts.push("region");
+      }
+      res.json({ valid: false, conflict: conflicts });
+    }
   });
 
   app.route("/api/solve").post((req, res) => {
@@ -67,11 +67,11 @@ module.exports = function (app) {
       res.json({ error: "Invalid characters in puzzle" });
       return;
     }
-    // let solvedString = solver.solve(puzzle);
-    // if (!solvedString) {
-    //   res.json({ error: "Puzzle cannot be solved" });
-    // } else {
-    //   res.json({ solution: solvedString });
-    // }
+    let solvedString = solver.solve(puzzle);
+    if (!solvedString) {
+      res.json({ error: "Puzzle cannot be solved" });
+    } else {
+      res.json({ solution: solvedString });
+    }
   });
 };
