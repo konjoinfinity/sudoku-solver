@@ -25,11 +25,51 @@ suite("UnitTests => Solver Logic Functions", () => {
         done();
       });
   
-    //   test("Logic handles a valid row placement", function (done) {
-    //     assert.equal(solver.checkRowPlacement(validPuzzle, "A", "2", "9"), true);
-    //     done();
-    //   });
+      test("Logic handles a valid row placement, should return true", function (done) {
+        assert.equal(solver.checkRowPlacement(validPuzzle, "A", "2", "9"), true);
+        done();
+      });
 
+      test("Logic handles an invalid row placement, should return false", function (done) {
+        assert.equal(solver.checkRowPlacement(validPuzzle, "A", "2", "1"), false);
+        done();
+      });
+  
+      test("Logic handles a valid column placement, should return true", function (done) {
+        assert.equal(solver.checkColPlacement(validPuzzle, "A", "2", "8"), true);
+        done();
+      });
+
+      test("Logic handles an invalid column placement, should return false", function (done) {
+        assert.equal(solver.checkColPlacement(validPuzzle, "A", "2", "9"), false);
+        done();
+      });
+
+      test("Logic handles a valid region (3x3 grid) placement, should return true", function (done) {
+        assert.equal(solver.checkRegionPlacement(validPuzzle, "A", "2", "3"), true);
+        done();
+      });
+
+      test("Logic handles an invalid region (3x3 grid) placement, should return false", function (done) {
+        assert.equal(solver.checkRegionPlacement(validPuzzle, "A", "2", "1"), false);
+        done();
+      });
+
+      test("Valid puzzle strings pass the solver, should be equal", function (done) {
+        assert.equal(solver.solve(validPuzzle), "135762984946381257728459613694517832812936745357824196473298561581673429269145378");
+        done();
+      });
+
+      test("Invalid puzzle strings fail the solver, should be false", function (done) {
+        let inValidPuzzle = "115..2.84..63.12.7.2..5.....9..1....8.2.3674.3.7.2..9.47...8..1..16....926914.37.";
+        assert.equal(solver.solve(inValidPuzzle), false);
+        done();
+      });
+
+      test("Solver returns the the expected solution for an incomplete puzzzle, should be equal", function (done) {
+        assert.equal(solver.solve("..839.7.575.....964..1.......16.29846.9.312.7..754.....62..5.78.8...3.2...492...1"), "218396745753284196496157832531672984649831257827549613962415378185763429374928561");
+        done();
+      });
 
 })
 })
