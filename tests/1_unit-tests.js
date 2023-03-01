@@ -3,66 +3,66 @@ const assert = chai.assert;
 const Solver = require("../controllers/sudoku-solver.js");
 let solver = new Solver();
 
-let validPuzzle = "1.5..2.84..63.12.7.2..5.....9..1....8.2.3674.3.7.2..9.47...8..1..16....926914.37.";
+let validPuzzleString = "1.5..2.84..63.12.7.2..5.....9..1....8.2.3674.3.7.2..9.47...8..1..16....926914.37.";
 
 suite("UnitTests => Solver Logic Functions", () => {
   suite("solver tests", function () {
     test("Logic handles a valid puzzle string of 81 characters", function (done) {
       let complete = "135762984946381257728459613694517832812936745357824196473298561581673429269145378";
-      assert.equal(solver.solve(validPuzzle), complete);
+      assert.equal(solver.solve(validPuzzleString), complete);
       done();
     });
 
     test("Logic handles a puzzle string with invalid characters (not 1-9 or .), should return false", function (done) {
-        let inValidPuzzle = "1.5..2.84..63.12.7.2..5..g..9..1....8.2.3674.3.7.2..9.47...8..1..16....926914.37.";
-        assert.equal(solver.solve(inValidPuzzle), false);
+        let invalidPuzzleString = "1.5..2.84..63.12.7.2..5..g..9..1....8.2.3674.3.7.2..9.47...8..1..16....926914.37.";
+        assert.equal(solver.solve(invalidPuzzleString), false);
         done();
       });
 
       test("Logic handles a puzzle string that is not 81 characters in length, should return false", function (done) {
-        let inValidPuzzle = "1.5..2.84..63.12.7.2..5.......9..1....8.2.3674.3.7.2..9.47...8..1..16....926914.37.";
-          assert.equal(solver.solve(inValidPuzzle), false);
+        let invalidPuzzleString = "1.5..2.84..63.12.7.2..5.......9..1....8.2.3674.3.7.2..9.47...8..1..16....926914.37.";
+          assert.equal(solver.solve(invalidPuzzleString), false);
         done();
       });
   
       test("Logic handles a valid row placement, should return true", function (done) {
-        assert.equal(solver.checkRowPlacement(validPuzzle, "A", "2", "9"), true);
+        assert.equal(solver.checkRowPlacement(validPuzzleString, "A", "2", "9"), true);
         done();
       });
 
       test("Logic handles an invalid row placement, should return false", function (done) {
-        assert.equal(solver.checkRowPlacement(validPuzzle, "A", "2", "1"), false);
+        assert.equal(solver.checkRowPlacement(validPuzzleString, "A", "2", "1"), false);
         done();
       });
   
       test("Logic handles a valid column placement, should return true", function (done) {
-        assert.equal(solver.checkColPlacement(validPuzzle, "A", "2", "8"), true);
+        assert.equal(solver.checkColPlacement(validPuzzleString, "A", "2", "8"), true);
         done();
       });
 
       test("Logic handles an invalid column placement, should return false", function (done) {
-        assert.equal(solver.checkColPlacement(validPuzzle, "A", "2", "9"), false);
+        assert.equal(solver.checkColPlacement(validPuzzleString, "A", "2", "9"), false);
         done();
       });
 
       test("Logic handles a valid region (3x3 grid) placement, should return true", function (done) {
-        assert.equal(solver.checkRegionPlacement(validPuzzle, "A", "2", "3"), true);
+        assert.equal(solver.checkRegionPlacement(validPuzzleString, "A", "2", "3"), true);
         done();
       });
 
       test("Logic handles an invalid region (3x3 grid) placement, should return false", function (done) {
-        assert.equal(solver.checkRegionPlacement(validPuzzle, "A", "2", "1"), false);
+        assert.equal(solver.checkRegionPlacement(validPuzzleString, "A", "2", "1"), false);
         done();
       });
 
       test("Valid puzzle strings pass the solver, should be equal", function (done) {
-        assert.equal(solver.solve(validPuzzle), "135762984946381257728459613694517832812936745357824196473298561581673429269145378");
+        assert.equal(solver.solve(validPuzzleString), "135762984946381257728459613694517832812936745357824196473298561581673429269145378");
         done();
       });
 
       test("Invalid puzzle strings fail the solver, should be false", function (done) {
-        let inValidPuzzle = "115..2.84..63.12.7.2..5.....9..1....8.2.3674.3.7.2..9.47...8..1..16....926914.37.";
-        assert.equal(solver.solve(inValidPuzzle), false);
+        let invalidPuzzleString = "115..2.84..63.12.7.2..5.....9..1....8.2.3674.3.7.2..9.47...8..1..16....926914.37.";
+        assert.equal(solver.solve(invalidPuzzleString), false);
         done();
       });
 
